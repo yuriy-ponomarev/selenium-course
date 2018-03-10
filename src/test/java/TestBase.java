@@ -21,9 +21,12 @@ public class TestBase {
         driver = new ChromeDriver();
         tlDriver.set(driver);
         wait = new WebDriverWait(driver, 10);
-
+        driver.manage().window().maximize();
         Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> { driver.quit(); driver = null; }));
+                new Thread(() -> {
+                    driver.quit();
+                    driver = null;
+                }));
     }
 
     @AfterTest
