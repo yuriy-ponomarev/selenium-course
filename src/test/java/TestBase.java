@@ -1,5 +1,8 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -21,7 +24,7 @@ public class TestBase {
         driver = new ChromeDriver();
         tlDriver.set(driver);
         wait = new WebDriverWait(driver, 10);
-        driver.manage().window().maximize();
+        // driver.manage().window().maximize();
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
                     driver.quit();
