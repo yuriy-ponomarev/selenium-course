@@ -65,7 +65,7 @@ public class MainPageTest extends TestBase {
     }
 
     @Test
-    private void productDetailsElements() {
+    private void testProductDetailsElements() {
         System.out.println("--- mainPageProductBoxElements ---");
         driver.navigate().to(BASE_URL);
         wait.until(titleIs("Online Store | My Store"));
