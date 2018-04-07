@@ -15,6 +15,7 @@ public class AdministrationPanelTest extends TestBase {
     private static final String PASSWORD = "admin";
 
     private static final String COUNTRY_PAGE_URL = BASE_URL + "/admin/?app=countries&doc=countries";
+    private static final String GEOZONES_URL = BASE_URL + "/admin/?app=geo_zones&doc=geo_zones";
 
     private static final String LOGOUT_LOCATOR = "//i[@class='fa fa-sign-out fa-lg']";
     private static final String COUNTRY_NAME_LOCATOR = "/html/body/div/div/div/table/tbody/tr/td/form/table/tbody/tr/td[5]/a[1]";
@@ -85,7 +86,7 @@ public class AdministrationPanelTest extends TestBase {
 
         List<WebElement> countries = driver.findElements(By.xpath(COUNTRY_NAME_LOCATOR));
         List<WebElement> zones = driver.findElements(By.xpath(COUNTRY_ZONE_LOCATOR));
-        
+
         int countryCounter = zones.size();
         for (int i = 0; i < countryCounter; i++) {
             if (!zones.get(i).getText().equals("0")) {
@@ -98,6 +99,30 @@ public class AdministrationPanelTest extends TestBase {
                 countries = driver.findElements(By.xpath(COUNTRY_NAME_LOCATOR));
                 zones = driver.findElements(By.xpath(COUNTRY_ZONE_LOCATOR));
             }
+        }
+        testAdminPageLogout();
+    }
+
+    @Test
+    private void testGeoZonesSorting() {
+        testAdminPageLogin();
+        System.out.println("--- testGeoZonesSorting ---");
+        driver.navigate().to(GEOZONES_URL);
+
+        String countryLocator = "//tr[@class='row']//td[3]//a";
+        String countryZoneLocator = "//select[contains(@name, '[zone_code]')]";
+
+        List<WebElement> countries = driver.findElements(By.xpath(countryLocator));
+
+        int countryCounter = countries.size();
+        for (int i = 0; i < countryCounter; i++) {
+            System.out.println("Verify zones for: " + countries.get(i).getText());
+            countries.get(i).click();
+
+            verifyCountryNamesSorting(countryZoneLocator);
+
+            driver.navigate().to(GEOZONES_URL);
+            countries = driver.findElements(By.xpath(countryLocator));
         }
         testAdminPageLogout();
     }
