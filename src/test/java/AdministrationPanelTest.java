@@ -13,7 +13,6 @@ public class AdministrationPanelTest extends TestBase {
     private static final String PASSWORD = "admin";
 
     private static final String LOGOUT_LOCATOR = "//i[@class='fa fa-sign-out fa-lg']";
-    private static final String BOX_APPS_MENU_LOCATOR = "//html//ul[@id='box-apps-menu']/li[*]";
 
     @Test
     private void testAdminPageLogin() {
