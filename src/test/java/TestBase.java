@@ -12,6 +12,7 @@ public class TestBase {
     public static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
     public WebDriver driver;
     public WebDriverWait wait;
+    public static final String BASE_URL = "http://localhost/litecart";
 
     @BeforeTest
     public void start() {
