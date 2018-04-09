@@ -171,8 +171,8 @@ public class AdministrationPanelTest extends TestBase {
         String setActiveLocator = "//label[1]/input[1]";
         String nameInputLocator = "//input[@type='text'][contains(@name, 'name')]";
         String catalogRootLocator = "//input[contains(@data-name, 'Root')]";
-        String catalogCustomLocator = "//input[contains(@data-name, 'Custom Duck')]";
-        String catalogCustomLinkLocator = "//a[text()[contains(.,'Custom Duck')]]";
+        String catalogCustomLocator = "//input[contains(@data-name, 'Rubber Duck')]";
+        String catalogCustomLinkLocator = "//a[text()[contains(.,'Rubber Duck')]]";
         String imageFileLocator = "//input[@type='file']";
         String purchasePriceLocator = "//input[@name='purchase_price']";
         String priceUSDLocator = "//input[@name='prices[USD]']";
