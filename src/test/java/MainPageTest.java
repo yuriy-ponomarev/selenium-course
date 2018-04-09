@@ -2,6 +2,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class MainPageTest extends TestBase {
     @Test
     private void testMainPageProductSticker() {
         System.out.println("--- testMainPageProductSticker ---");
+        SoftAssert softAssert = new SoftAssert();
+        
         String allProductsLocator = "product"; // for XPath: "//li[contains(@class, 'product')]"
         String stickerLocator = "./a/div/div[contains(@class, 'sticker')]";
 
@@ -32,8 +35,11 @@ public class MainPageTest extends TestBase {
         productBoxes.forEach(e -> {
             List<WebElement> stickers = (e.findElements(By.xpath(stickerLocator)));
             System.out.println("For '" + e.getText() + "' stickers count = " + stickers.size() + "\n");
-            Assert.assertEquals(1, stickers.size());
+            softAssert.assertEquals(1, stickers.size());
+
         });
+
+        softAssert.assertAll();
     }
 
     @Test
