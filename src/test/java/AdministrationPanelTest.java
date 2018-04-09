@@ -1,11 +1,13 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -17,9 +19,13 @@ public class AdministrationPanelTest extends TestBase {
     private static final String COUNTRY_PAGE_URL = BASE_URL + "/admin/?app=countries&doc=countries";
     private static final String GEOZONES_URL = BASE_URL + "/admin/?app=geo_zones&doc=geo_zones";
 
+    /* Countries Page */
     private static final String LOGOUT_LOCATOR = "//i[@class='fa fa-sign-out fa-lg']";
     private static final String COUNTRY_NAME_LOCATOR = "/html/body/div/div/div/table/tbody/tr/td/form/table/tbody/tr/td[5]/a[1]";
     private static final String COUNTRY_ZONE_LOCATOR = "/html/body/div/div/div/table/tbody/tr/td/form/table/tbody/tr/td[6]";
+
+    /* Edit Country Page */
+    private static final String EXTERNAL_LINK_LOCATOR = "//i[@class='fa fa-external-link']/..";
 
     @Test
     private void testAdminPageLogin() {
@@ -127,6 +133,37 @@ public class AdministrationPanelTest extends TestBase {
         testAdminPageLogout();
     }
 
+    @Test
+    private void testEditCountryPageExternalLinks() {
+        testAdminPageLogin();
+        System.out.println("--- testEditCountryPageExternalLinks ---");
+        driver.navigate().to(COUNTRY_PAGE_URL);
+        driver.findElement(By.xpath(COUNTRY_NAME_LOCATOR)).click();
+        List<WebElement> externalLinks = driver.findElements(By.xpath(EXTERNAL_LINK_LOCATOR));
+        int linksCounter = externalLinks.size();
+
+        String mainWindow = driver.getWindowHandle();
+        Set<String> oldWindows = driver.getWindowHandles();
+
+        for (int i = 0; i < linksCounter; i++) {
+            String externalLinkValue = externalLinks.get(i).getAttribute("href");
+            System.out.println("Link to open: " + externalLinkValue);
+            externalLinks.get(i).click();
+
+            String newWindow = wait.until(thereIsWindowOtherThan(oldWindows));
+            driver.switchTo().window(newWindow);
+
+            System.out.println("Link opened: " + driver.getCurrentUrl() +"\n");
+
+            driver.close();
+            driver.switchTo().window(mainWindow);
+
+            externalLinks = driver.findElements(By.xpath(EXTERNAL_LINK_LOCATOR));
+        }
+
+
+    }
+
 
     private void verifyCountryNamesSorting(String locator) {
         List<String> countryNames = new ArrayList<>();
@@ -139,5 +176,13 @@ public class AdministrationPanelTest extends TestBase {
         System.out.println("Expected: " + toBeSortedCountryNames);
 
         Assert.assertEquals(countryNames, toBeSortedCountryNames);
+    }
+
+    private ExpectedCondition<String> thereIsWindowOtherThan(Set<String> oldWindows) {
+        return input -> {
+            Set<String> handles = input.getWindowHandles();
+            handles.removeAll(oldWindows);
+            return handles.size() > 0 ? handles.iterator().next() : null;
+        };
     }
 }
