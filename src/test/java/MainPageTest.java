@@ -9,7 +9,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class MainPageTest extends TestBase {
 
-    private static final String CAMPAINS_PRODUCT_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']";
+    private static final String CAMPAIGNS_PRODUCT_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']";
     private static final String MAIN_PAGE_PRODUCT_NAME_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='name']";
     private static final String MAIN_PAGE_PRICE_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='price-wrapper']//s[@class='regular-price']";
     private static final String MAIN_PAGE_DISCOUNT_PRICE_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='price-wrapper']//strong[@class='campaign-price']";
@@ -50,7 +50,7 @@ public class MainPageTest extends TestBase {
 
         System.out.println("mainPage: \n" + mainPageDuck);
 
-        driver.findElement(By.xpath(CAMPAINS_PRODUCT_LOCATOR)).click();
+        driver.findElement(By.xpath(CAMPAIGNS_PRODUCT_LOCATOR)).click();
 
         Product detailsPageDuck = new Product(
                 driver.findElement(By.xpath(DETAILS_PAGE_PRODUCT_NAME_LOCATOR)).getText(),
@@ -72,7 +72,7 @@ public class MainPageTest extends TestBase {
 
         verifyProductDetailsElements(MAIN_PAGE_PRICE_LOCATOR, MAIN_PAGE_DISCOUNT_PRICE_LOCATOR);
 
-        driver.findElement(By.xpath(CAMPAINS_PRODUCT_LOCATOR)).click();
+        driver.findElement(By.xpath(CAMPAIGNS_PRODUCT_LOCATOR)).click();
 
         verifyProductDetailsElements(DETAILS_PAGE_PRICE_LOCATOR, DETAILS_PAGE_DISCOUNT_PRICE_LOCATOR);
 
