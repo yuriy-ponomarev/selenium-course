@@ -21,13 +21,13 @@ public class MainPageTest extends TestBase {
     @Test
     private void testMainPageProductSticker() {
         System.out.println("--- testMainPageProductSticker ---");
-        String allProductsLocator = "//li[@class='product column shadow hover-light']";
+        String allProductsLocator = "li[class='product column shadow hover-light']";
         String stickerLocator = "./a/div/div[contains(@class, 'sticker')]";
 
         driver.navigate().to(BASE_URL);
         wait.until(titleIs("Online Store | My Store"));
 
-        List<WebElement> productBoxes = driver.findElements(By.xpath(allProductsLocator));
+        List<WebElement> productBoxes = driver.findElements(By.cssSelector(allProductsLocator));
 
         productBoxes.forEach(e -> {
             List<WebElement> stickers = (e.findElements(By.xpath(stickerLocator)));
