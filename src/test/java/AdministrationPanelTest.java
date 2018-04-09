@@ -1,6 +1,7 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -153,17 +154,93 @@ public class AdministrationPanelTest extends TestBase {
             String newWindow = wait.until(thereIsWindowOtherThan(oldWindows));
             driver.switchTo().window(newWindow);
 
-            System.out.println("Link opened: " + driver.getCurrentUrl() +"\n");
+            System.out.println("Link opened: " + driver.getCurrentUrl() + "\n");
 
             driver.close();
             driver.switchTo().window(mainWindow);
 
             externalLinks = driver.findElements(By.xpath(EXTERNAL_LINK_LOCATOR));
         }
-
-
+        testAdminPageLogout();
     }
 
+    @Test
+    private void testAddNewProduct() {
+        String catalogLocator = "//a[contains(@href, 'app=catalog&doc=catalog')]";
+        String addProductLocator = "//a[contains(@href, 'doc=edit_product')]";
+        String setActiveLocator = "//label[1]/input[1]";
+        String nameInputLocator = "//input[@type='text'][contains(@name, 'name')]";
+        String catalogRootLocator = "//input[contains(@data-name, 'Root')]";
+        String catalogCustomLocator = "//input[contains(@data-name, 'Custom Duck')]";
+        String catalogCustomLinkLocator = "//a[text()[contains(.,'Custom Duck')]]";
+        String imageFileLocator = "//input[@type='file']";
+        String purchasePriceLocator = "//input[@name='purchase_price']";
+        String priceUSDLocator = "//input[@name='prices[USD]']";
+        String saveButtonLocator = "//html//p//button[@name='save']";
+
+        String informationTabLocator = "//a[@href='#tab-information']";
+        String pricesTabLocator = "//a[@href='#tab-prices']";
+
+        String manufacturerSelectorLocator = "//select[@name='manufacturer_id']";
+        String currencySelectorLocator = "//select[@name='purchase_price_currency_code']";
+
+
+        Product duck = new Product(
+                "Custom Duck " + System.currentTimeMillis(),
+                "10",
+                "10");
+        duck.setImagePath(System.getProperty("user.dir") + "/pic/rubber-ducks-country.jpg");
+        duck.setManufacturer("ACME Corp.");
+
+        testAdminPageLogin();
+        System.out.println("--- testAddNewProduct ---");
+        System.out.println(duck);
+
+        driver.findElement(By.xpath(catalogLocator)).click();
+        driver.findElement(By.xpath(addProductLocator)).click();
+
+        driver.findElement(By.xpath(setActiveLocator)).click();
+        driver.findElement(By.xpath(nameInputLocator)).sendKeys(duck.getName());
+        driver.findElement(By.xpath(catalogRootLocator)).click();
+        driver.findElement(By.xpath(catalogCustomLocator)).click();
+        driver.findElement(By.xpath(imageFileLocator)).sendKeys(duck.getImagePath());
+
+        driver.findElement(By.xpath(informationTabLocator)).click();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Select manufacturerSelector = new Select(driver.findElement(By.xpath(manufacturerSelectorLocator)));
+        manufacturerSelector.selectByVisibleText(duck.getManufacturer());
+
+
+        driver.findElement(By.xpath(pricesTabLocator)).click();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Select currencySelector = new Select(driver.findElement(By.xpath(currencySelectorLocator)));
+        currencySelector.selectByVisibleText("US Dollars");
+        driver.findElement(By.xpath(purchasePriceLocator)).clear();
+        driver.findElement(By.xpath(purchasePriceLocator)).sendKeys(duck.getPriceWithDiscount());
+        driver.findElement(By.xpath(priceUSDLocator)).sendKeys(duck.getPrice());
+
+        driver.findElement(By.xpath(saveButtonLocator)).click();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        driver.findElement(By.xpath(catalogLocator)).click();
+        driver.findElement(By.xpath(catalogCustomLinkLocator)).click();
+
+        Assert.assertTrue(driver.findElement(By.xpath("//a[text()[contains(.,'" + duck.getName() + "')]]")).isDisplayed());
+
+        testAdminPageLogout();
+    }
 
     private void verifyCountryNamesSorting(String locator) {
         List<String> countryNames = new ArrayList<>();

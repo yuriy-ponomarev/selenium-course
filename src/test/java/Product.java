@@ -4,6 +4,8 @@ public class Product{
     private String name;
     private String price;
     private String priceWithDiscount;
+    private String imagePath;
+    private String manufacturer;
 
     public String getName() {
         return name;
@@ -27,6 +29,23 @@ public class Product{
 
     public void setPriceWithDiscount(String priceWithDiscount) {
         this.priceWithDiscount = priceWithDiscount;
+    }
+
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
     public Product(String name, String price, String priceWithDiscount) {

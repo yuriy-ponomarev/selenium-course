@@ -23,9 +23,9 @@ public class MainPageTest extends TestBase {
     private void testMainPageProductSticker() {
         System.out.println("--- testMainPageProductSticker ---");
         SoftAssert softAssert = new SoftAssert();
-        
+
         String allProductsLocator = "product"; // for XPath: "//li[contains(@class, 'product')]"
-        String stickerLocator = "./a/div/div[contains(@class, 'sticker')]";
+        String stickerLocator = "sticker";
 
         driver.navigate().to(BASE_URL);
         wait.until(titleIs("Online Store | My Store"));
@@ -33,7 +33,7 @@ public class MainPageTest extends TestBase {
         List<WebElement> productBoxes = driver.findElements(By.className(allProductsLocator));
 
         productBoxes.forEach(e -> {
-            List<WebElement> stickers = (e.findElements(By.xpath(stickerLocator)));
+            List<WebElement> stickers = (e.findElements(By.className(stickerLocator)));
             System.out.println("For '" + e.getText() + "' stickers count = " + stickers.size() + "\n");
             softAssert.assertEquals(1, stickers.size());
 
