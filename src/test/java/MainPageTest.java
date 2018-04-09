@@ -21,7 +21,7 @@ public class MainPageTest extends TestBase {
     @Test
     private void testMainPageProductSticker() {
         System.out.println("--- testMainPageProductSticker ---");
-        String allProductsLocator = "li[class='product column shadow hover-light']";
+        String allProductsLocator = "li[class='product column shadow hover-light']"; // for XPath: "//li[contains(@class, 'product')]" 
         String stickerLocator = "./a/div/div[contains(@class, 'sticker')]";
 
         driver.navigate().to(BASE_URL);
