@@ -1,16 +1,16 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class AdministrationPanelTest extends TestBase {
@@ -27,6 +27,25 @@ public class AdministrationPanelTest extends TestBase {
 
     /* Edit Country Page */
     private static final String EXTERNAL_LINK_LOCATOR = "//i[@class='fa fa-external-link']/..";
+
+    /* Edit Product Page */
+    private static final String CATALOG_LOCATOR = "//a[contains(@href, 'app=catalog&doc=catalog')]";
+    private static final String ADD_PRODUCT_LOCATOR = "//a[contains(@href, 'doc=edit_product')]";
+    private static final String SET_ACTIVE_LOCATOR = "//label[1]/input[1]";
+    private static final String NAME_INPUT_LOCATOR = "//input[@type='text'][contains(@name, 'name')]";
+    private static final String CATALOG_ROOT_LOCATOR = "//input[contains(@data-name, 'Root')]";
+    private static final String CATALOG_CUSTOM_LOCATOR = "//input[contains(@data-name, 'Rubber Duck')]";
+    private static final String CATALOG_CUSTOM_LINK_LOCATOR = "//a[text()[contains(.,'Rubber Duck')]]";
+    private static final String PRODUCT_LINK_LOCATOR = "//html//tr/td[3]/a[contains(@href, 'product_id=')]";
+    private static final String IMAGE_FILE_LOCATOR = "//input[@type='file']";
+    private static final String PURCHASE_PRICE_LOCATOR = "//input[@name='purchase_price']";
+    private static final String PRICE_USD_LOCATOR = "//input[@name='prices[USD]']";
+    private static final String SAVE_BUTTON_LOCATOR = "//html//p//button[@name='save']";
+    private static final String INFORMATION_TAB_LOCATOR = "//a[@href='#tab-information']";
+    private static final String PRICES_TAB_LOCATOR = "//a[@href='#tab-prices']";
+
+    private static final String MANUFACTURER_SELECTOR_LOCATOR = "//select[@name='manufacturer_id']";
+    private static final String CURRENCY_SELECTOR_LOCATOR = "//select[@name='purchase_price_currency_code']";
 
     @Test
     private void testAdminPageLogin() {
@@ -166,24 +185,8 @@ public class AdministrationPanelTest extends TestBase {
 
     @Test
     private void testAddNewProduct() {
-        String catalogLocator = "//a[contains(@href, 'app=catalog&doc=catalog')]";
-        String addProductLocator = "//a[contains(@href, 'doc=edit_product')]";
-        String setActiveLocator = "//label[1]/input[1]";
-        String nameInputLocator = "//input[@type='text'][contains(@name, 'name')]";
-        String catalogRootLocator = "//input[contains(@data-name, 'Root')]";
-        String catalogCustomLocator = "//input[contains(@data-name, 'Rubber Duck')]";
-        String catalogCustomLinkLocator = "//a[text()[contains(.,'Rubber Duck')]]";
-        String imageFileLocator = "//input[@type='file']";
-        String purchasePriceLocator = "//input[@name='purchase_price']";
-        String priceUSDLocator = "//input[@name='prices[USD]']";
-        String saveButtonLocator = "//html//p//button[@name='save']";
-
-        String informationTabLocator = "//a[@href='#tab-information']";
-        String pricesTabLocator = "//a[@href='#tab-prices']";
-
-        String manufacturerSelectorLocator = "//select[@name='manufacturer_id']";
-        String currencySelectorLocator = "//select[@name='purchase_price_currency_code']";
-
+        testAdminPageLogin();
+        System.out.println("--- testAddNewProduct ---");
 
         Product duck = new Product(
                 "Custom Duck " + System.currentTimeMillis(),
@@ -192,53 +195,78 @@ public class AdministrationPanelTest extends TestBase {
         duck.setImagePath(System.getProperty("user.dir") + "/pic/rubber-ducks-country.jpg");
         duck.setManufacturer("ACME Corp.");
 
-        testAdminPageLogin();
-        System.out.println("--- testAddNewProduct ---");
         System.out.println(duck);
 
-        driver.findElement(By.xpath(catalogLocator)).click();
-        driver.findElement(By.xpath(addProductLocator)).click();
+        driver.findElement(By.xpath(CATALOG_LOCATOR)).click();
+        driver.findElement(By.xpath(ADD_PRODUCT_LOCATOR)).click();
 
-        driver.findElement(By.xpath(setActiveLocator)).click();
-        driver.findElement(By.xpath(nameInputLocator)).sendKeys(duck.getName());
-        driver.findElement(By.xpath(catalogRootLocator)).click();
-        driver.findElement(By.xpath(catalogCustomLocator)).click();
-        driver.findElement(By.xpath(imageFileLocator)).sendKeys(duck.getImagePath());
+        driver.findElement(By.xpath(SET_ACTIVE_LOCATOR)).click();
+        driver.findElement(By.xpath(NAME_INPUT_LOCATOR)).sendKeys(duck.getName());
+        driver.findElement(By.xpath(CATALOG_ROOT_LOCATOR)).click();
+        driver.findElement(By.xpath(CATALOG_CUSTOM_LOCATOR)).click();
+        driver.findElement(By.xpath(IMAGE_FILE_LOCATOR)).sendKeys(duck.getImagePath());
 
-        driver.findElement(By.xpath(informationTabLocator)).click();
+        driver.findElement(By.xpath(INFORMATION_TAB_LOCATOR)).click();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Select manufacturerSelector = new Select(driver.findElement(By.xpath(manufacturerSelectorLocator)));
+        Select manufacturerSelector = new Select(driver.findElement(By.xpath(MANUFACTURER_SELECTOR_LOCATOR)));
         manufacturerSelector.selectByVisibleText(duck.getManufacturer());
 
 
-        driver.findElement(By.xpath(pricesTabLocator)).click();
+        driver.findElement(By.xpath(PRICES_TAB_LOCATOR)).click();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Select currencySelector = new Select(driver.findElement(By.xpath(currencySelectorLocator)));
+        Select currencySelector = new Select(driver.findElement(By.xpath(CURRENCY_SELECTOR_LOCATOR)));
         currencySelector.selectByVisibleText("US Dollars");
-        driver.findElement(By.xpath(purchasePriceLocator)).clear();
-        driver.findElement(By.xpath(purchasePriceLocator)).sendKeys(duck.getPriceWithDiscount());
-        driver.findElement(By.xpath(priceUSDLocator)).sendKeys(duck.getPrice());
+        driver.findElement(By.xpath(PURCHASE_PRICE_LOCATOR)).clear();
+        driver.findElement(By.xpath(PURCHASE_PRICE_LOCATOR)).sendKeys(duck.getPriceWithDiscount());
+        driver.findElement(By.xpath(PRICE_USD_LOCATOR)).sendKeys(duck.getPrice());
 
-        driver.findElement(By.xpath(saveButtonLocator)).click();
+        driver.findElement(By.xpath(SAVE_BUTTON_LOCATOR)).click();
 
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        driver.findElement(By.xpath(catalogLocator)).click();
-        driver.findElement(By.xpath(catalogCustomLinkLocator)).click();
+        driver.findElement(By.xpath(CATALOG_LOCATOR)).click();
+        driver.findElement(By.xpath(CATALOG_CUSTOM_LINK_LOCATOR)).click();
 
         Assert.assertTrue(driver.findElement(By.xpath("//a[text()[contains(.,'" + duck.getName() + "')]]")).isDisplayed());
 
+        testAdminPageLogout();
+    }
+
+    @Test
+    private void testAdminPanelConsoleLog() {
+        SoftAssert softAssert = new SoftAssert();
+        testAdminPageLogin();
+        System.out.println("--- testAdminPanelConsoleLog ---");
+
+        driver.findElement(By.xpath(CATALOG_LOCATOR)).click();
+        driver.findElement(By.xpath(CATALOG_CUSTOM_LINK_LOCATOR)).click();
+
+        List<WebElement> productLinks = driver.findElements(By.xpath(PRODUCT_LINK_LOCATOR));
+        int linksCounter = productLinks.size();
+        for (int i = 0; i < linksCounter; i++) {
+
+            productLinks.get(i).click();
+
+            for (LogEntry l : driver.manage().logs().get("browser").getAll()) {
+                System.out.println(l);
+                softAssert.assertNull(l);
+            }
+
+            driver.navigate().back();
+            productLinks = driver.findElements(By.xpath(PRODUCT_LINK_LOCATOR));
+        }
+        softAssert.assertAll();
         testAdminPageLogout();
     }
 
