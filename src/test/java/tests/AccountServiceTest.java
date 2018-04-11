@@ -1,20 +1,13 @@
 package tests;
 
 import model.User;
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.BoxAccountPageBlock;
 import pages.CreateAccountPage;
 import pages.MainPage;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-
 public class AccountServiceTest extends TestBase {
-
-
-
 
     @Test
     private void testUserLogin() {
