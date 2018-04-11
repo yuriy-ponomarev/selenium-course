@@ -1,10 +1,13 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
@@ -14,26 +17,36 @@ public class MainPageTest extends TestBase {
     private static final String MAIN_PAGE_PRODUCT_NAME_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='name']";
     private static final String MAIN_PAGE_PRICE_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='price-wrapper']//s[@class='regular-price']";
     private static final String MAIN_PAGE_DISCOUNT_PRICE_LOCATOR = "//div[@id='box-campaigns']//div[@class='content']//ul//li//a[@class='link']//div[@class='price-wrapper']//strong[@class='campaign-price']";
+    private static final String ALL_PRODUCTS_LOCATOR = "product"; // for XPath: "//li[contains(@class, 'product')]"
+    private static final String STICKER_LOCATOR = "sticker";
 
     private static final String DETAILS_PAGE_PRODUCT_NAME_LOCATOR = "//h1[@class='title']";
     private static final String DETAILS_PAGE_PRICE_LOCATOR = "//s[@class='regular-price']";
     private static final String DETAILS_PAGE_DISCOUNT_PRICE_LOCATOR = "//strong[@class='campaign-price']";
+
+    private static final String ADD_TO_CART_BUTTON_LOCATOR = "add_cart_product";
+    private static final String PRODUCT_SIZE_SELECTOR_LOCATOR = "[name='options[Size]']";
+
+    private static final String CART_ITEMS_QUANTITY_LOCATOR = "span.quantity";
+    private static final String CHECKOUT_LINK_LOCATOR = "//div[@id='cart']//a[3]";
+
+    /* Cart */
+    private static final String EMPTY_CART_MESSAGE_LOCATOR = "//html//p[1]//em";
+    private static final String CART_REMOVE_PRODUCT_LOCATOR = "[name=remove_cart_item]";
+    private static final String CART_FORM_LOCATOR = "[name =cart_form]";
 
     @Test
     private void testMainPageProductSticker() {
         System.out.println("--- testMainPageProductSticker ---");
         SoftAssert softAssert = new SoftAssert();
 
-        String allProductsLocator = "product"; // for XPath: "//li[contains(@class, 'product')]"
-        String stickerLocator = "sticker";
-
         driver.navigate().to(BASE_URL);
         wait.until(titleIs("Online Store | My Store"));
 
-        List<WebElement> productBoxes = driver.findElements(By.className(allProductsLocator));
+        List<WebElement> productBoxes = driver.findElements(By.className(ALL_PRODUCTS_LOCATOR));
 
         productBoxes.forEach(e -> {
-            List<WebElement> stickers = (e.findElements(By.className(stickerLocator)));
+            List<WebElement> stickers = (e.findElements(By.className(STICKER_LOCATOR)));
             System.out.println("For '" + e.getText() + "' stickers count = " + stickers.size() + "\n");
             softAssert.assertEquals(1, stickers.size());
 
@@ -84,6 +97,21 @@ public class MainPageTest extends TestBase {
 
     }
 
+    @Test
+    private void testCartAddProduct() {
+        System.out.println("--- testCartAddProduct ---");
+
+        for (int i=0; i<3; i++){
+            driver.navigate().to(BASE_URL);
+            addProductToCart();
+        }
+
+        driver.findElement(By.xpath(CHECKOUT_LINK_LOCATOR)).click();
+
+        cartRemoveAll();
+
+    }
+
     private void verifyProductDetailsElements(String regularPriceLocator, String discountPriceLocator) {
 
         String priceAttributes = driver.findElement(By.xpath(regularPriceLocator))
@@ -123,5 +151,29 @@ public class MainPageTest extends TestBase {
         System.out.println(fontSizeDP);
 
         Assert.assertTrue(fontSizeRP < fontSizeDP);
+    }
+
+    private void addProductToCart(){
+        driver.findElement(By.className(ALL_PRODUCTS_LOCATOR)).click();
+
+        if (driver.findElements(By.cssSelector(PRODUCT_SIZE_SELECTOR_LOCATOR)).size() > 0) {
+            new Select(driver.findElement(By.cssSelector(PRODUCT_SIZE_SELECTOR_LOCATOR))).selectByIndex(1);
+        }
+        int count = Integer.parseInt(driver.findElement(By.cssSelector(CART_ITEMS_QUANTITY_LOCATOR)).getText());
+        driver.findElement(By.name(ADD_TO_CART_BUTTON_LOCATOR)).click();
+
+        wait.until((WebDriver d) -> Integer.parseInt(driver
+                .findElement(By.cssSelector(CART_ITEMS_QUANTITY_LOCATOR))
+                .getText()) == count + 1);
+    }
+
+    private void cartRemoveAll(){
+        while (driver.findElements(By.xpath(EMPTY_CART_MESSAGE_LOCATOR)).size() != 1){
+            driver.findElement(By.cssSelector(CART_REMOVE_PRODUCT_LOCATOR)).click();
+            Integer skuLines = driver.findElements(By.cssSelector(CART_FORM_LOCATOR)).size();
+            wait.until((Function<WebDriver, Object>) driver -> driver
+                    .findElements(By.cssSelector(CART_FORM_LOCATOR)).size() != skuLines ||
+                    !driver.findElement(By.cssSelector(CART_FORM_LOCATOR)).isDisplayed());
+        }
     }
 }
