@@ -1,3 +1,5 @@
+package tests;
+
 import org.testng.annotations.Test;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;

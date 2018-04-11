@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 
 public class Product{
@@ -56,7 +58,7 @@ public class Product{
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "model.Product{" +
                 "name='" + name + '\'' +
                 ", price='" + price + '\'' +
                 ", priceWithDiscount='" + priceWithDiscount + '\'' +

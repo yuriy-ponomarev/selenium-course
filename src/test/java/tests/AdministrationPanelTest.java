@@ -1,3 +1,6 @@
+package tests;
+
+import model.Product;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogEntry;
@@ -11,14 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class AdministrationPanelTest extends TestBase {
     private static final String LOGIN_NAME = "admin";
     private static final String PASSWORD = "admin";
 
-    private static final String COUNTRY_PAGE_URL = BASE_URL + "/admin/?app=countries&doc=countries";
-    private static final String GEOZONES_URL = BASE_URL + "/admin/?app=geo_zones&doc=geo_zones";
+    private static final String COUNTRY_PAGE_URL = TestBase.BASE_URL + "/admin/?app=countries&doc=countries";
+    private static final String GEOZONES_URL = TestBase.BASE_URL + "/admin/?app=geo_zones&doc=geo_zones";
 
     /* Countries Page */
     private static final String LOGOUT_LOCATOR = "//i[@class='fa fa-sign-out fa-lg']";
@@ -28,7 +32,7 @@ public class AdministrationPanelTest extends TestBase {
     /* Edit Country Page */
     private static final String EXTERNAL_LINK_LOCATOR = "//i[@class='fa fa-external-link']/..";
 
-    /* Edit Product Page */
+    /* Edit model.Product Page */
     private static final String CATALOG_LOCATOR = "//a[contains(@href, 'app=catalog&doc=catalog')]";
     private static final String ADD_PRODUCT_LOCATOR = "//a[contains(@href, 'doc=edit_product')]";
     private static final String SET_ACTIVE_LOCATOR = "//label[1]/input[1]";
@@ -50,7 +54,7 @@ public class AdministrationPanelTest extends TestBase {
     @Test
     private void testAdminPageLogin() {
         System.out.println("--- testAdminPageLogin ---");
-        driver.navigate().to(BASE_URL + "/admin/");
+        driver.navigate().to(TestBase.BASE_URL + "/admin/");
         wait.until(titleIs("My Store"));
         driver.findElement(By.name("username")).sendKeys(LOGIN_NAME);
         driver.findElement(By.name("password")).sendKeys(PASSWORD);

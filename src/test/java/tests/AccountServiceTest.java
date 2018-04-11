@@ -1,3 +1,5 @@
+package tests;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -27,7 +29,7 @@ public class AccountServiceTest extends TestBase {
     @Test
     private void testUserLogin(String login, String password) {
         System.out.println("--- testUserLogin ---");
-        driver.navigate().to(BASE_URL);
+        driver.navigate().to(TestBase.BASE_URL);
         driver.findElement(By.xpath(EMAIL_INPUT_LOCATOR)).clear();
         driver.findElement(By.xpath(EMAIL_INPUT_LOCATOR)).sendKeys(login);
         driver.findElement(By.xpath(PASSWORD_INPUT_LOCATOR)).clear();
@@ -61,7 +63,7 @@ public class AccountServiceTest extends TestBase {
         String password = "qwe123";
         System.out.println(login + " " + password);
 
-        driver.navigate().to(BASE_URL + "/create_account");
+        driver.navigate().to(TestBase.BASE_URL + "/create_account");
         wait.until(titleIs("Create Account | My Store"));
 
         driver.findElement(By.xpath(INPUT_FIRSTNAME_LOCATOR)).sendKeys(firsname);
