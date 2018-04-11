@@ -20,6 +20,7 @@ public class MainPage extends PageBase {
     private static final String STICKER_LOCATOR = "sticker";
     private static final String CHECKOUT_LINK_LOCATOR = "//div[@id='cart']//a[3]";
 
+
     public SoftAssert verifyStickers() {
         SoftAssert softAssert = new SoftAssert();
         List<WebElement> productBoxes = driver.findElements(By.className(ALL_PRODUCTS_LOCATOR));
@@ -53,6 +54,10 @@ public class MainPage extends PageBase {
     public CartPage checkout(){
         driver.findElement(By.xpath(CHECKOUT_LINK_LOCATOR)).click();
         return new CartPage(driver);
+    }
+
+    public boolean verifySuccessMessage(){
+        return driver.findElement(By.xpath("//div[@class='notice success']")).isDisplayed();
     }
 
     public void verifyProductDetailsElements() {
