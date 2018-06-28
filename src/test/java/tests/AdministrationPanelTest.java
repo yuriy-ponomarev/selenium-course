@@ -278,7 +278,7 @@ public class AdministrationPanelTest extends TestBase {
         List<String> countryNames = new ArrayList<>();
         driver.findElements(By.xpath(locator)).forEach(e -> countryNames.add(e.getText()));
 
-        List<String> toBeSortedCountryNames = countryNames;
+        List<String> toBeSortedCountryNames = new ArrayList<>( countryNames );
         java.util.Collections.sort(toBeSortedCountryNames);
 
         System.out.println("Actual: " + countryNames);
